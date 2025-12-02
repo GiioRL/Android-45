@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+
+
+<HBox fx:id="box" alignment="CENTER_LEFT" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="199.0" prefWidth="425" spacing="25.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.album.photoBox.PhotoBoxController" />

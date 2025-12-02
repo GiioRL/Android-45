@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="backgroundPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#onClick" prefHeight="175.0" prefWidth="175.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.album.albumThumbnail.AlbumThumbnailViewController">
+   <children>
+      <Text fx:id="titleText" layoutX="1.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Album Title" textAlignment="CENTER" wrappingWidth="175.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Text fx:id="photoNumText" layoutX="1.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="# Photos" textAlignment="CENTER" wrappingWidth="175.0" />
+      <Text fx:id="dateRangeText" layoutX="1.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Start Date - End Date" textAlignment="CENTER" wrappingWidth="175.0" />
+      <StackPane layoutX="25.0" prefHeight="125.0" prefWidth="125.0">
+         <children>
+            <ImageView fx:id="imageView" fitHeight="125.0" fitWidth="125.0" pickOnBounds="true" preserveRatio="true">
+               <viewport>
+                  <Rectangle2D />
+               </viewport>
+            </ImageView>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

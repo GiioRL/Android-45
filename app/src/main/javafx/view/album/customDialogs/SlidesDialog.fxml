@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<DialogPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <HBox alignment="CENTER" spacing="10.0">
+         <children>
+            <Button fx:id="leftButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="◄" />
+            <ImageView fx:id="imageView" fitHeight="500.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" />
+            <Button fx:id="rightButton" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" text="►" />
+         </children>
+      </HBox>
+   </content>
+</DialogPane>
