@@ -1,0 +1,12 @@
+3 activities:
+    1) Home screen (library)
+    2) Album
+    3) Display photo/slideshow
+
+Photo class needs only URI (no location, caption, date)
+
+Create view from custom XML (inflate): https://stackoverflow.com/questions/27128425/add-multiple-custom-views-to-layout-programmatically
+
+JavaFX to Android translation:
+    - Node = View
+    -
