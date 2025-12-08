@@ -15,3 +15,4 @@ Same goes for Photo thumbnail
 JavaFX to Android translation:
     - Node = View
     - ComboBox = Spinner
+    - VBox = LinearLayout

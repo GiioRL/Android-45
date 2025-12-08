@@ -102,4 +102,10 @@ public class Album implements Serializable {
     public Album clone() {
         return new Album(photos, name);
     }
+
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Album))
+            return false;
+        return name.equals(((Album) o).name);
+    }
 }

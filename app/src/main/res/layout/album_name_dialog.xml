@@ -20,6 +20,5 @@
         android:layout_weight="2"
         android:ems="10"
         android:inputType="text"
-        android:text="Name"
         android:layout_marginEnd="10dp"/>
 </LinearLayout>
