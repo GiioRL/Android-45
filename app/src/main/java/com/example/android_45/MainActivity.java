@@ -1,6 +1,9 @@
 package com.example.android_45;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -114,7 +117,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openAlbum(Album album, boolean notTemporary) {
-
+        Intent intent = new Intent(this, AlbumActivity.class);
+        intent.putExtra("Album", album);
+        startActivity(intent);
     }
 
     // Listener for create album button
