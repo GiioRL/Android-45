@@ -7,6 +7,11 @@ Photo class needs only URI (no location, caption, date)
 
 Create view from custom XML (inflate): https://stackoverflow.com/questions/27128425/add-multiple-custom-views-to-layout-programmatically
 
+Dialogs (in-built and custom): https://developer.android.com/develop/ui/views/components/dialogs
+
+Cool feature: the View for Album thumbnail can store the Album itself (view.setTag(album), album = view.getTag())
+Same goes for Photo thumbnail
+
 JavaFX to Android translation:
     - Node = View
-    -
+    - ComboBox = Spinner

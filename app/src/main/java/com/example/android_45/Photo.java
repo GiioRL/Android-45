@@ -73,11 +73,11 @@ public class Photo implements Serializable {
      * @throws IOException if reading fails
      * @throws ClassNotFoundException if class lookup fails
      */
-    private void readObject(ObjectInputStream in)
-            throws IOException, ClassNotFoundException {
-
-        in.defaultReadObject();
+//    private void readObject(ObjectInputStream in)
+//            throws IOException, ClassNotFoundException {
+//
+//        in.defaultReadObject();
 //        image = createImage();
 //        createThumbnail();
-    }
+//    }
 }
