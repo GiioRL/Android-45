@@ -9,7 +9,7 @@
 
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
         tools:srcCompat="@tools:sample/backgrounds/scenic">

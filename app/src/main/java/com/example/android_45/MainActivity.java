@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity {
         openAlbumButon.setEnabled(false);
         renameAlbumButon.setEnabled(false);
         deleteAlbumButon.setEnabled(false);
+
+        // Set up thumbnails for saved albums
+        ArrayList<Album> savedAlbums = getSavedAlbums();
+        setupAlbumThumbnails(savedAlbums);
     }
 
     private void select(View albumThumbnail) {
@@ -118,7 +122,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void openAlbum(Album album, boolean notTemporary) {
         Intent intent = new Intent(this, AlbumActivity.class);
-        intent.putExtra("Album", album);
+        intent
+                .putExtra("Album", album)
+                .putExtra("notTemporary", notTemporary);
+        deselect();
         startActivity(intent);
     }
 
@@ -238,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        return new Album(new ArrayList<>(albumPhotos), "Unnamed album");
+        return new Album(new ArrayList<>(albumPhotos), "Tag Search");
     }
 
     private Album tagSearch(String type1, String value1, String conjunction, String type2, String value2) {
@@ -257,16 +264,26 @@ public class MainActivity extends AppCompatActivity {
                         albumPhotos.add(photo);
                     }
                 }
-                return trimDuplicates(new Album(albumPhotos, "Unnamed Album"));
+                return trimDuplicates(new Album(albumPhotos, "Date Search"));
             } else if (conjunction.equals("Or")) {
                 for (Photo photo: album2Photos) {
                     album1Photos.add(photo);
                 }
-                return trimDuplicates(new Album(album1Photos, "Unnamed Album"));
+                return trimDuplicates(new Album(album1Photos, "Date Search"));
             } else {
                 System.out.println("invalid conjunction");
                 return null;
             }
+        }
+    }
+
+    // Set up album thumbnails when first showing app
+    private void setupAlbumThumbnails(ArrayList<Album> albums) {
+        if (albums == null)
+            return;
+        for (Album album: albums) {
+            View albumThumbnailView = createAlbumThumbnailView(album);
+            albumScrollContainer.addView(albumThumbnailView);
         }
     }
 
@@ -285,6 +302,11 @@ public class MainActivity extends AppCompatActivity {
         albumThumbnailView.setTag(album);
         albumThumbnailView.setOnClickListener(this::select);
         return albumThumbnailView;
+    }
+
+    // Get any albums saved from previous session
+    private ArrayList<Album> getSavedAlbums() {
+        return null;
     }
 
     // Check if album exists with given albumName

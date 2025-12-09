@@ -62,6 +62,15 @@ public class Photo implements Serializable {
         return uri;
     }
 
+    public String getName() {   return uri.toString();  }
+
+    // Photos are equal if they have the same location (URI)
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Photo))
+            return false;
+        return uri.equals(((Photo) o).getUri());
+    }
+
     /**
      * Custom deserialization logic.
      * <p>
