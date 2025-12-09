@@ -1,6 +1,7 @@
 package com.example.android_45;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -114,8 +117,20 @@ public class AlbumActivity extends AppCompatActivity {
 
     // Listener for add album button
     private void addPhoto() {
-
+        getUserImage.launch("image/*");
     }
+
+    ActivityResultLauncher<String> getUserImage = registerForActivityResult(new ActivityResultContracts.GetContent(), (Uri uri) -> {
+        Photo newPhoto = new Photo(uri);
+        LinearLayout photoBox;
+        if (album.getPhotos().size() % 3 == 0)
+            photoBox = createPhotoBox();
+        else
+            photoBox = (LinearLayout) photoScrollContainer.getChildAt(photoScrollContainer.getChildCount() - 1);
+        View photoThumbnail = createPhotoThumbnailView(newPhoto);
+        photoBox.addView(photoThumbnail);
+        album.getPhotos().add(newPhoto);
+    });
 
     // Listener for display photo button
     private void displayPhoto() {

@@ -35,6 +35,11 @@ public class Photo implements Serializable {
         this.tags = tags;
     }
 
+    public Photo(Uri uri) {
+        this.uri = uri;
+        this.tags = null;
+    }
+
     /**
      * Returns the list of tags assigned to the photo.
      *
