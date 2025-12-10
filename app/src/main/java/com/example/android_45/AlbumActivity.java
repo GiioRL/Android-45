@@ -31,6 +31,7 @@ public class AlbumActivity extends AppCompatActivity {
     private Button displayPhotoButon, addPhotoButon, movePhotoButon, removePhotoButon;
 
     private Album album;
+    private ArrayList<Album> albums;
     private View curSelected = null;
     private boolean notTemporary;
     private static final int REQUEST_IMAGE = 1;
@@ -67,6 +68,7 @@ public class AlbumActivity extends AppCompatActivity {
 
         // Get data from Main Activity
         album = getIntent().getSerializableExtra("Album", Album.class);
+        albums = getIntent().getSerializableExtra("albums", ArrayList.class);
         notTemporary = getIntent().getBooleanExtra("notTemporary", true);
 
         // Set up photo thumbnails
@@ -233,5 +235,11 @@ public class AlbumActivity extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         finish();
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MainActivity.saveData(this, albums);
     }
 }
