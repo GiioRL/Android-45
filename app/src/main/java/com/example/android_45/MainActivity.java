@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         intent
                 .putExtra("Album", album)
                 .putExtra("notTemporary", notTemporary);
-        deselect();
         startActivity(intent);
     }
 
@@ -160,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     View albumThumbnailView = createAlbumThumbnailView(newAlbum);
                     albumScrollContainer.addView(albumThumbnailView);
                 });
+
         return builder.create();
     }
 
