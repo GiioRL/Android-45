@@ -113,6 +113,13 @@ public class Tag implements Serializable {
         return value.equals(other.getValue());
     }
 
+    public boolean tagContains(Tag other) {
+        if (value == null || other == null)
+            return false;
+        int len = other.getValue().length();
+        return (value.substring(0, len).equalsIgnoreCase(other.value.substring(0, len)));
+    }
+
     /**
      * Returns a string representation of the tag in the form
      * {@code "type: value"}.
