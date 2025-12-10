@@ -1,5 +1,6 @@
 package com.example.android_45;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -84,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         deleteAlbumButon.setEnabled(false);
 
         // Set up thumbnails for saved albums
-        ArrayList<Album> savedAlbums = getSavedAlbums();
+        ArrayList<Album> savedAlbums = getSavedAlbums(this);
         setupAlbumThumbnails(savedAlbums);
     }
 
@@ -124,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AlbumActivity.class);
         intent
                 .putExtra("Album", album)
+                .putExtra("albums", getAlbums())
                 .putExtra("notTemporary", notTemporary);
         deselect();
         startActivity(intent);
@@ -227,10 +233,13 @@ public class MainActivity extends AppCompatActivity {
         HashSet<Photo> albumPhotos = new HashSet<>();
         Tag tag = new Tag(type, value);
         ArrayList<Photo> photos = new ArrayList<>();
-        for (int i = 0; i < albumScrollContainer.getChildCount(); i++) {
-            Album album = (Album) albumScrollContainer.getChildAt(i).getTag();
+        for (Album album: getAlbums()) {
             photos.addAll(album.getPhotos());
         }
+//        for (int i = 0; i < albumScrollContainer.getChildCount(); i++) {
+//            Album album = (Album) albumScrollContainer.getChildAt(i).getTag();
+//            photos.addAll(album.getPhotos());
+//        }
 
         for (Photo photo: photos) {
             ArrayList<Tag> photoTags = photo.getTags();
@@ -304,9 +313,27 @@ public class MainActivity extends AppCompatActivity {
         return albumThumbnailView;
     }
 
+    private ArrayList<Album> getAlbums() {
+        ArrayList<Album> albums = new ArrayList<Album>();
+        for (int i = 0; i < albumScrollContainer.getChildCount(); i++) {
+            albums.add((Album)albumScrollContainer.getChildAt(i).getTag());
+        }
+        return albums;
+    }
+
     // Get any albums saved from previous session
-    private ArrayList<Album> getSavedAlbums() {
-        return null;
+    private ArrayList<Album> getSavedAlbums(Context context) {
+        ArrayList<Album> albums = new ArrayList<Album>();
+        try {
+            FileInputStream fis = context.openFileInput("albums.ser");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            albums = (ArrayList<Album>)ois.readObject();
+            ois.close();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return albums;
     }
 
     // Check if album exists with given albumName
@@ -333,5 +360,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return new Album(albumPhotos, album.getName());
+    }
+
+    public static void saveData(Context context, ArrayList<Album> albums) {
+        try {
+            FileOutputStream fos = context.openFileOutput("albums.ser", Context.MODE_PRIVATE);
+
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(albums);
+
+            oos.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+        saveData(this, getAlbums());
     }
 }
