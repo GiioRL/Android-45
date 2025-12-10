@@ -17,6 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -132,8 +136,17 @@ public class MainActivity extends AppCompatActivity {
                 .putExtra("Album", album)
                 .putExtra("albums", getAlbums())
                 .putExtra("notTemporary", notTemporary);
-        startActivity(intent);
+        launchAlbum.launch(intent);
+        deselect();
     }
+
+    ActivityResultLauncher<Intent> launchAlbum = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() != RESULT_OK)
+            return;
+        Intent intent = result.getData();
+        Album album = intent.getSerializableExtra("Album", Album.class);
+        curSelected.setTag(album);
+    });
 
     // Listener for create album button
     private void createAlbum() {

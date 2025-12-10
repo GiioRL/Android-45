@@ -74,23 +74,6 @@ public class Album implements Serializable {
     }
 
     /**
-     * Returns to the user’s album list view.
-     * <p>
-     * The thumbnail is recreated to refresh its graphics.
-     * </p>
-     */
-    public void back() {
-
-    }
-
-    /**
-     * Removes this album from its owner's collection.
-     */
-    public void delete() {
-
-    }
-
-    /**
      * Creates a shallow clone of this album.
      * <p>
      * The clone references the same {@code photos} list and user,
