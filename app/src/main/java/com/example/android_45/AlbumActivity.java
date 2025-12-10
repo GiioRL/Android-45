@@ -152,8 +152,21 @@ public class AlbumActivity extends AppCompatActivity {
 
     // Listener for display photo button
     private void displayPhoto() {
-
+        Intent intent = new Intent(this, AlbumActivity.class);
+        intent
+                .putExtra("Photo", (Photo) curSelected.getTag())
+                .putExtra("albums", albums);
+        launchPhoto.launch(intent);
+        deselect();
     }
+
+    ActivityResultLauncher<Intent> launchPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() != RESULT_OK)
+            return;
+        Intent intent = result.getData();
+        Photo photo = intent.getSerializableExtra("Photo", Photo.class);
+        curSelected.setTag(photo);
+    });
 
     // Listener for move photo button
     private void movePhoto() {
