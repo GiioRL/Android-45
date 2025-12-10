@@ -37,6 +37,7 @@ public class AlbumActivity extends AppCompatActivity {
     private Album album;
     private ArrayList<Album> albums;
     private ArrayList<Album> otherAlbums;
+    private int index;
     private View curSelected = null;
     private boolean notTemporary;
     private static final int REQUEST_IMAGE = 1;
@@ -77,6 +78,7 @@ public class AlbumActivity extends AppCompatActivity {
         notTemporary = getIntent().getBooleanExtra("notTemporary", true);
 
         otherAlbums = (ArrayList<Album>)albums.clone();
+        index = otherAlbums.indexOf(album);
         otherAlbums.remove(album);
 
         // Set up photo thumbnails
@@ -254,7 +256,7 @@ public class AlbumActivity extends AppCompatActivity {
         super.onPause();
         Log.d("DEBUG", "pausing albumactivity");
         ArrayList<Album> updatedAlbums = new ArrayList<Album>(otherAlbums);
-        updatedAlbums.add(album);
+        updatedAlbums.add(index, album);
         MainActivity.saveData(this, updatedAlbums);
     }
 }
