@@ -151,15 +151,16 @@ public class AlbumActivity extends AppCompatActivity {
         }
 
         Photo newPhoto = new Photo(internalFile, photoName);
-        LinearLayout photoBox;
-        if (album.getPhotos().size() % 3 == 0)
-            photoBox = createPhotoBox();
-        else
-            photoBox = (LinearLayout) photoScrollContainer.getChildAt(photoScrollContainer.getChildCount() - 1);
-        View photoThumbnail = createPhotoThumbnailView(newPhoto);
-        photoBox.addView(photoThumbnail);
-        photoScrollContainer.addView(photoBox);
+//        LinearLayout photoBox;
+//        if (album.getPhotos().size() % 3 == 0)
+//            photoBox = createPhotoBox();
+//        else
+//            photoBox = (LinearLayout) photoScrollContainer.getChildAt(photoScrollContainer.getChildCount() - 1);
+//        View photoThumbnail = createPhotoThumbnailView(newPhoto);
+//        photoBox.addView(photoThumbnail);
+//        photoScrollContainer.addView(photoBox);
         album.getPhotos().add(newPhoto);
+        setupPhotoThumbnails(album.getPhotos());
     });
 
     // Listener for display photo button
@@ -179,6 +180,7 @@ public class AlbumActivity extends AppCompatActivity {
 
     // Set up photo thumbnails when launching activity
     private void setupPhotoThumbnails(ArrayList<Photo> photos) {
+        photoScrollContainer.removeAllViews();
         if (photos == null)
             return;
 
