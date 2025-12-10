@@ -21,6 +21,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class AlbumActivity extends AppCompatActivity {
@@ -31,6 +36,7 @@ public class AlbumActivity extends AppCompatActivity {
 
     private Album album;
     private ArrayList<Album> albums;
+    private ArrayList<Album> otherAlbums;
     private View curSelected = null;
     private boolean notTemporary;
     private static final int REQUEST_IMAGE = 1;
@@ -69,6 +75,9 @@ public class AlbumActivity extends AppCompatActivity {
         album = getIntent().getSerializableExtra("Album", Album.class);
         albums = getIntent().getSerializableExtra("albums", ArrayList.class);
         notTemporary = getIntent().getBooleanExtra("notTemporary", true);
+
+        otherAlbums = (ArrayList<Album>)albums.clone();
+        otherAlbums.remove(album);
 
         // Set up photo thumbnails
         setupPhotoThumbnails(album.getPhotos());
@@ -128,7 +137,20 @@ public class AlbumActivity extends AppCompatActivity {
         if (uri == null)
             return;
         String photoName = getNameFromUri(uri);
-        Photo newPhoto = new Photo(uri, photoName);
+
+        File internalFile = new File(getFilesDir(), "photo_" + System.currentTimeMillis() + ".jpg");
+        try (InputStream in = getContentResolver().openInputStream(uri);
+             OutputStream out = new FileOutputStream(internalFile)) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = in.read(buffer)) > 0) {
+                out.write(buffer, 0, len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Photo newPhoto = new Photo(internalFile, photoName);
         LinearLayout photoBox;
         if (album.getPhotos().size() % 3 == 0)
             photoBox = createPhotoBox();
@@ -164,7 +186,7 @@ public class AlbumActivity extends AppCompatActivity {
         for (int i = 0; i < (num+2)/3; i++) {
             LinearLayout photoBox = createPhotoBox();
             for (int j = 0; j < 3; j++) {
-                if (3*i + j >= num) {
+                if (3*i + j < num) {
                     View photoThumbnail = createPhotoThumbnailView(photos.get(3*i + j));
                     photoBox.addView(photoThumbnail);
                 }
@@ -219,7 +241,8 @@ public class AlbumActivity extends AppCompatActivity {
     // User pressed back button
     @Override
     public boolean onSupportNavigateUp() {
-        deselect();
+//        Log.d("DEBUG", "support is navigating up");
+//        deselect();
         finish();
         return true;
     }
@@ -227,6 +250,9 @@ public class AlbumActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        MainActivity.saveData(this, albums);
+        Log.d("DEBUG", "pausing albumactivity");
+        ArrayList<Album> updatedAlbums = new ArrayList<Album>(otherAlbums);
+        updatedAlbums.add(album);
+        MainActivity.saveData(this, updatedAlbums);
     }
 }

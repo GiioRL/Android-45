@@ -3,6 +3,7 @@ package com.example.android_45;
 import android.database.Cursor;
 import android.net.Uri;
 
+import java.io.File;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.io.IOException;
@@ -21,7 +22,9 @@ import java.util.ArrayList;
 public class Photo implements Serializable {
 
     /** The file path of the image. */
-    private Uri uri;
+    private transient Uri uri;
+
+    private String uriString;
 
     private String name;
 
@@ -35,12 +38,28 @@ public class Photo implements Serializable {
      */
     public Photo(Uri uri, String name, ArrayList<Tag> tags) {
         this.uri = uri;
+        uriString = uri.toString();
         this.name = name;
         this.tags = tags;
     }
 
     public Photo(Uri uri, String name) {
         this.uri = uri;
+        uriString = uri.toString();
+        this.name = name;
+        this.tags = null;
+    }
+
+    public Photo(File file, String name, ArrayList<Tag> tags) {
+        this.uri = Uri.fromFile(file);
+        this.uriString = file.getAbsolutePath();
+        this.name = name;
+        this.tags = tags;
+    }
+
+    public Photo(File file, String name) {
+        this.uri = Uri.fromFile(file);
+        this.uriString = file.getAbsolutePath();
         this.name = name;
         this.tags = null;
     }
@@ -72,6 +91,8 @@ public class Photo implements Serializable {
         return uri;
     }
 
+    public String getUriString() { return uriString; }
+
     public String getName() {   return name;  }
 
     // Photos are equal if they have the same location (URI)
@@ -92,11 +113,10 @@ public class Photo implements Serializable {
      * @throws IOException if reading fails
      * @throws ClassNotFoundException if class lookup fails
      */
-//    private void readObject(ObjectInputStream in)
-//            throws IOException, ClassNotFoundException {
-//
-//        in.defaultReadObject();
-//        image = createImage();
-//        createThumbnail();
-//    }
+    private void readObject(ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
+
+        in.defaultReadObject();
+        uri = Uri.parse(uriString);
+    }
 }

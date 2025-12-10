@@ -2,6 +2,7 @@ package com.example.android_45;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -89,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
         deleteAlbumButon.setEnabled(false);
 
         // Set up thumbnails for saved albums
-        ArrayList<Album> savedAlbums = getSavedAlbums(this);
-        setupAlbumThumbnails(savedAlbums);
+//        ArrayList<Album> savedAlbums = getSavedAlbums(this);
+//        setupAlbumThumbnails(savedAlbums);
     }
 
     private void select(View albumThumbnail) {
@@ -288,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Set up album thumbnails when first showing app
     private void setupAlbumThumbnails(ArrayList<Album> albums) {
+        albumScrollContainer.removeAllViews();
         if (albums == null)
             return;
         for (Album album: albums) {
@@ -306,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
         if (album.getPhotos().isEmpty())
             imageView.setImageResource(R.drawable.image_not_found);
         else
-            imageView.setImageURI(album.getPhotos().get(0).getUri());
+            imageView.setImageURI(Uri.parse(album.getPhotos().get(0).getUriString()));
 
         albumThumbnailView.setTag(album);
         albumThumbnailView.setOnClickListener(this::select);
@@ -376,7 +378,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override protected void onPause() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("DEBUG", "starting mainactivity");
+        setupAlbumThumbnails(getSavedAlbums(this));
+    }
+
+    @Override
+    protected void onPause() {
         super.onPause();
         saveData(this, getAlbums());
     }
