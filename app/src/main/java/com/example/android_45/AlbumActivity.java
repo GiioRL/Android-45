@@ -1,5 +1,6 @@
 package com.example.android_45;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -34,7 +37,6 @@ public class AlbumActivity extends AppCompatActivity {
     private ArrayList<Album> albums;
     private View curSelected = null;
     private boolean notTemporary;
-    private static final int REQUEST_IMAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +157,37 @@ public class AlbumActivity extends AppCompatActivity {
 
     // Listener for move photo button
     private void movePhoto() {
+        movePhotoDialog().show();
+    }
 
+    private AlertDialog movePhotoDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String[] albumNames = albums.stream()
+                .map(Album::getName)
+                .filter(name -> !name.equals(album.getName()))
+                .toArray(String[]::new);
+        builder.setSingleChoiceItems(albumNames, -1, (dialog, which) -> {
+            if (which == -1)
+                return;
+            Album destAlbum = albums.stream()
+                    .filter(a -> a.getName().equals(albumNames[which]))
+                    .findFirst()
+                    .get();
+
+            Photo photo = (Photo) curSelected.getTag();
+            if (destAlbum.getPhotos().contains(photo)) {
+                Toast toast = Toast.makeText(this, "Photo already exists in album.", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
+            destAlbum.getPhotos().add(photo);
+            removePhoto();
+            Toast toast = Toast.makeText(this, "Photo moved to " + destAlbum.getName() + " successfully!", Toast.LENGTH_LONG);
+            toast.show();
+            dialog.dismiss();
+        });
+        return builder.create();
     }
 
     // Listener for remove photo button
