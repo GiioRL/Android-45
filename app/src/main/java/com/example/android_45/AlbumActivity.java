@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -127,6 +128,13 @@ public class AlbumActivity extends AppCompatActivity {
             return;
         String photoName = getNameFromUri(uri);
         Photo newPhoto = new Photo(uri, photoName);
+
+        if (album.getPhotos().contains(newPhoto)) {
+            Toast toast = Toast.makeText(this, "Photo already exists in album.", Toast.LENGTH_LONG);
+            toast.show();
+            return;
+        }
+
         LinearLayout photoBox;
         if (album.getPhotos().size() % 3 == 0)
             photoBox = createPhotoBox();
@@ -150,7 +158,9 @@ public class AlbumActivity extends AppCompatActivity {
 
     // Listener for remove photo button
     private void removePhoto() {
-
+        album.getPhotos().remove((Photo) curSelected.getTag());
+        ((ViewGroup) curSelected.getParent()).removeView(curSelected);
+        deselect();
     }
 
     // Set up photo thumbnails when launching activity
@@ -218,6 +228,9 @@ public class AlbumActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         deselect();
+        Intent intent = new Intent();
+        intent.putExtra("Album", album);
+        setResult(RESULT_OK, intent);
         finish();
         return true;
     }
