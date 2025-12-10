@@ -1,5 +1,6 @@
 package com.example.android_45;
 
+import android.database.Cursor;
 import android.net.Uri;
 
 import java.io.ObjectInputStream;
@@ -22,6 +23,8 @@ public class Photo implements Serializable {
     /** The file path of the image. */
     private Uri uri;
 
+    private String name;
+
     /** The list of tags assigned to this photo. */
     private ArrayList<Tag> tags;
 
@@ -30,13 +33,15 @@ public class Photo implements Serializable {
      * @param uri the file path to the photo
      * @param tags     the list of tags assigned to the photo
      */
-    public Photo(Uri uri, ArrayList<Tag> tags) {
+    public Photo(Uri uri, String name, ArrayList<Tag> tags) {
         this.uri = uri;
+        this.name = name;
         this.tags = tags;
     }
 
-    public Photo(Uri uri) {
+    public Photo(Uri uri, String name) {
         this.uri = uri;
+        this.name = name;
         this.tags = null;
     }
 
@@ -67,7 +72,7 @@ public class Photo implements Serializable {
         return uri;
     }
 
-    public String getName() {   return uri.toString();  }
+    public String getName() {   return name;  }
 
     // Photos are equal if they have the same location (URI)
     public boolean equals(Object o) {

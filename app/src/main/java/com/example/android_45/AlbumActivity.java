@@ -1,8 +1,10 @@
 package com.example.android_45;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -123,7 +125,10 @@ public class AlbumActivity extends AppCompatActivity {
     }
 
     ActivityResultLauncher<String> getUserImage = registerForActivityResult(new ActivityResultContracts.GetContent(), (Uri uri) -> {
-        Photo newPhoto = new Photo(uri);
+        if (uri == null)
+            return;
+        String photoName = getNameFromUri(uri);
+        Photo newPhoto = new Photo(uri, photoName);
         LinearLayout photoBox;
         if (album.getPhotos().size() % 3 == 0)
             photoBox = createPhotoBox();
@@ -131,6 +136,7 @@ public class AlbumActivity extends AppCompatActivity {
             photoBox = (LinearLayout) photoScrollContainer.getChildAt(photoScrollContainer.getChildCount() - 1);
         View photoThumbnail = createPhotoThumbnailView(newPhoto);
         photoBox.addView(photoThumbnail);
+        photoScrollContainer.addView(photoBox);
         album.getPhotos().add(newPhoto);
     });
 
@@ -188,6 +194,26 @@ public class AlbumActivity extends AppCompatActivity {
         photoBox.setLayoutParams(params);
         photoBox.setOrientation(LinearLayout.HORIZONTAL);
         return photoBox;
+    }
+
+    // Helper to get file name from URI
+    private String getNameFromUri(Uri uri) {
+        String name = null;
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                if (index != -1)
+                    name = cursor.getString(index);
+            }
+        }
+        finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        if (name == null)
+            Log.d("DEBUG", "Couldn't get name from URI");
+        return name;
     }
 
     // User pressed back button

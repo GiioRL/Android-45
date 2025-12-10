@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                 .putExtra("Album", album)
                 .putExtra("albums", getAlbums())
                 .putExtra("notTemporary", notTemporary);
-        deselect();
         startActivity(intent);
     }
 
@@ -166,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                     View albumThumbnailView = createAlbumThumbnailView(newAlbum);
                     albumScrollContainer.addView(albumThumbnailView);
                 });
+
         return builder.create();
     }
 
