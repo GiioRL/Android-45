@@ -2,8 +2,8 @@ package com.example.android_45;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -108,14 +108,12 @@ public class PhotoActivity extends AppCompatActivity {
             setupScene(album.getPhotos().get(++photoIndex));
         }
     }
-    private void addTag() {
-        createTagDialog().show();
-    }
+    private void addTag() { createTagDialog().show(); }
 
     private AlertDialog createTagDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.add_tag_dialog, null);
-        Spinner tagDropdown = dialogView.findViewById(R.id.tagDropdown);
+        Spinner tagDropdown = dialogView.findViewById(R.id.typeDropdown);
         ArrayAdapter<String> tag1Adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new String[]{"--Tag Type--", "Person", "Location"});
         tagDropdown.setAdapter(tag1Adapter);
         EditText valueField = dialogView.findViewById(R.id.valueField);
@@ -172,7 +170,86 @@ public class PhotoActivity extends AppCompatActivity {
             return false;
         }
     }
-    private void removeTag() {}
+    private void removeTag() { removeTagDialog().show(); }
+
+    private AlertDialog removeTagDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.remove_tag_dialog, null);
+        Spinner typeDropdown = dialogView.findViewById(R.id.typeDropdown);
+        Spinner valueDropdown = dialogView.findViewById(R.id.valueDropdown);
+        ArrayAdapter<String> typeAdapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, new String[]{"--Tag Type--", "Person", "Location"});
+        typeDropdown.setAdapter(typeAdapter);
+        typeDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String tagType = parent.getItemAtPosition(position).toString();
+
+                if (tagType.equals("--Tag Type--")) {
+                    valueDropdown.setAdapter(null);
+                    return;
+                }
+
+                ArrayAdapter<String> valueAdapter = new ArrayAdapter<>(PhotoActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, getValues(tagType));
+                valueDropdown.setAdapter(valueAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                valueDropdown.setAdapter(null);
+            }
+        });
+
+        builder.setView(dialogView)
+                .setNegativeButton("Cancel", (dialog, id) -> {})
+                .setPositiveButton("OK", (dialog, id) -> {
+                    // Input validation
+
+                    String tagType = typeDropdown.getSelectedItem().toString();
+                    String tagValue = valueDropdown.getSelectedItem().toString();
+                    if (tagType.equals("--Tag Type--")) {
+                        Toast toast = Toast.makeText(this, "Select a tag type.", Toast.LENGTH_LONG);
+                        toast.show();
+                        return;
+                    }
+                    if (tagValue.equals("--Tag Value--")) {
+                        Toast toast = Toast.makeText(this, "Select a tag value.", Toast.LENGTH_LONG);
+                        toast.show();
+                        return;
+                    }
+                    Tag tag = new Tag(tagType, tagValue);
+                    album.getPhotos().remove(photo);
+                    removeTag(tag);
+                    album.getPhotos().add(photoIndex, photo);
+                    setupScene(photo);
+                });
+
+        return builder.create();
+    }
+
+    private void removeTag(Tag target) {
+        ArrayList<Tag> tags = photo.getTags();
+        for (int i = 0; i < tags.size(); i++) {
+            Tag tag = tags.get(i);
+            if (tag.equals(target)) {
+                if (tag.tagEquals(target)) {
+                    tags.remove(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    private ArrayList<String> getValues(String type) {
+        ArrayList<Tag> tags = photo.getTags();
+        ArrayList<String> values = new ArrayList<String>();
+        values.add("--Tag Value--");
+        for (Tag tag: tags) {
+            if (tag.getType().equals(type)) {
+                values.add(tag.getValue());
+            }
+        }
+        return values;
+    }
 
     private void setupScene(Photo photo) {
         this.photo = photo;
