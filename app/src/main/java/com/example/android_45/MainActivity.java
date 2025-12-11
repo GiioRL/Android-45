@@ -274,6 +274,9 @@ public class MainActivity extends AppCompatActivity {
             return album1;
         } else {
             Album album2 = tagSearch(type2, value2);
+            if (album2 == null) {
+                return null;
+            }
             ArrayList<Photo> album1Photos = album1.getPhotos();
             ArrayList<Photo> album2Photos = album2.getPhotos();
             ArrayList<Photo> albumPhotos = new ArrayList<>();

@@ -186,15 +186,16 @@ public class AlbumActivity extends AppCompatActivity {
                 .putExtra("otherAlbums", otherAlbums)
                 .putExtra("albumIndex", index);
         launchPhoto.launch(intent);
-        deselect();
     }
 
     ActivityResultLauncher<Intent> launchPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() != RESULT_OK)
             return;
         Intent intent = result.getData();
-        Photo photo = intent.getSerializableExtra("Photo", Photo.class);
-        curSelected.setTag(photo);
+        album = intent.getSerializableExtra("Album", Album.class);
+//        curSelected.setTag(photo);
+        deselect();
+        setupPhotoThumbnails(album.getPhotos());
     });
 
     // Listener for move photo button
@@ -320,7 +321,8 @@ public class AlbumActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         ArrayList<Album> updatedAlbums = new ArrayList<Album>(otherAlbums);
-        updatedAlbums.add(index, album);
+        if (notTemporary)
+            updatedAlbums.add(index, album);
         MainActivity.saveData(this, updatedAlbums);
     }
 }

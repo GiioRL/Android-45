@@ -1,5 +1,6 @@
 package com.example.android_45;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -107,8 +108,6 @@ public class PhotoActivity extends AppCompatActivity {
             setupScene(album.getPhotos().get(++photoIndex));
         }
     }
-
-//    private void addTag() {}
     private void addTag() {
         createTagDialog().show();
     }
@@ -137,14 +136,18 @@ public class PhotoActivity extends AppCompatActivity {
                         toast.show();
                         return;
                     }
-                    if (tagExists(tagType, tagValue)) {
-                        Toast toast = Toast.makeText(this, "Photo already has that tag.", Toast.LENGTH_LONG);
-                        toast.show();
-                        return;
-                    }
 
                     // Create tag for photo
                     Tag tag = new Tag(tagType, tagValue);
+                    if (tagExists(tag)) {
+                        Toast toast;
+                        if (tagType.equals("Location"))
+                            toast = Toast.makeText(this, "Photo already has a location tag.", Toast.LENGTH_LONG);
+                        else
+                            toast = Toast.makeText(this, "Photo already has that tag.", Toast.LENGTH_LONG);
+                        toast.show();
+                        return;
+                    }
                     album.getPhotos().remove(photo);
                     photo.addTag(tag);
                     album.getPhotos().add(photoIndex, photo);
@@ -154,7 +157,21 @@ public class PhotoActivity extends AppCompatActivity {
         return builder.create();
     }
 
-    private boolean tagExists(String tagType, String tagValue) { return false; }
+    private boolean tagExists(Tag newTag) {
+        ArrayList<Tag> tags = photo.getTags();
+        if (newTag.getType().equals("Location")) {
+            return tags.contains(newTag);
+        } else {
+            for (Tag tag: tags) {
+                if (tag.equals(newTag)) {
+                    if (tag.tagEquals(newTag)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
     private void removeTag() {}
 
     private void setupScene(Photo photo) {
@@ -177,8 +194,15 @@ public class PhotoActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        returnUpdatedAlbum();
         finish();
         return true;
+    }
+
+    private void returnUpdatedAlbum() {
+        Intent result = new Intent();
+        result.putExtra("Album", album);
+        setResult(RESULT_OK, result);
     }
 
     @Override
