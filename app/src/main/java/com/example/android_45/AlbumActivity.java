@@ -80,6 +80,10 @@ public class AlbumActivity extends AppCompatActivity {
         albums = getIntent().getSerializableExtra("albums", ArrayList.class);
         notTemporary = getIntent().getBooleanExtra("notTemporary", true);
 
+        if (album == null) {
+            Log.d("DEBUG", "null album from intent");
+        }
+
         otherAlbums = (ArrayList<Album>)albums.clone();
         index = otherAlbums.indexOf(album);
         otherAlbums.remove(album);
@@ -175,8 +179,23 @@ public class AlbumActivity extends AppCompatActivity {
 
     // Listener for display photo button
     private void displayPhoto() {
-
+        Intent intent = new Intent(this, PhotoActivity.class);
+        intent
+                .putExtra("Photo", (Photo) curSelected.getTag())
+                .putExtra("album", album)
+                .putExtra("otherAlbums", otherAlbums)
+                .putExtra("albumIndex", index);
+        launchPhoto.launch(intent);
+        deselect();
     }
+
+    ActivityResultLauncher<Intent> launchPhoto = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() != RESULT_OK)
+            return;
+        Intent intent = result.getData();
+        Photo photo = intent.getSerializableExtra("Photo", Photo.class);
+        curSelected.setTag(photo);
+    });
 
     // Listener for move photo button
     private void movePhoto() {
@@ -291,9 +310,15 @@ public class AlbumActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("DEBUG", "starting albumactivity");
+        setupPhotoThumbnails(album.getPhotos());
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        Log.d("DEBUG", "pausing albumactivity");
         ArrayList<Album> updatedAlbums = new ArrayList<Album>(otherAlbums);
         updatedAlbums.add(index, album);
         MainActivity.saveData(this, updatedAlbums);

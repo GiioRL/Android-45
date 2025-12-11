@@ -47,7 +47,7 @@ public class Photo implements Serializable {
         this.uri = uri;
         uriString = uri.toString();
         this.name = name;
-        this.tags = null;
+        this.tags = new ArrayList<Tag>();
     }
 
     public Photo(File file, String name, ArrayList<Tag> tags) {
@@ -61,7 +61,7 @@ public class Photo implements Serializable {
         this.uri = Uri.fromFile(file);
         this.uriString = file.getAbsolutePath();
         this.name = name;
-        this.tags = null;
+        this.tags = new ArrayList<Tag>();
     }
 
     /**
@@ -80,6 +80,10 @@ public class Photo implements Serializable {
      */
     public void setTags(ArrayList<Tag> newTags) {
         tags = newTags;
+    }
+
+    public void addTag(Tag tag) {
+        tags.add(tag);
     }
 
     /**

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,8 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
@@ -156,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog createAlbumDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.album_name_dialog, null);
-        EditText albumField = dialogView.findViewById(R.id.albumNameTextField);
+        EditText albumField = dialogView.findViewById(R.id.valueField);
 
         builder.setView(dialogView)
                 .setNegativeButton("Cancel", (dialog, id) -> {})
@@ -191,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog renameAlbumDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.album_name_dialog, null);
-        EditText albumField = dialogView.findViewById(R.id.albumNameTextField);
+        EditText albumField = dialogView.findViewById(R.id.valueField);
 
         builder.setView(dialogView)
                 .setNegativeButton("Cancel", (dialog, id) -> {})
