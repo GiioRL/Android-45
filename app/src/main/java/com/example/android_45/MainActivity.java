@@ -270,13 +270,17 @@ public class MainActivity extends AppCompatActivity {
 
     private Album tagSearch(String type1, String value1, String conjunction, String type2, String value2) {
         Album album1 = tagSearch(type1, value1);
-        if (conjunction.equals("...") || album1 == null) {
+        if (album1 == null) {
             return album1;
         } else {
             Album album2 = tagSearch(type2, value2);
             if (album2 == null) {
+                if (conjunction.equals("..."))
+                    return album1;
                 return null;
             }
+            if (conjunction.equals("..."))
+                return null;
             ArrayList<Photo> album1Photos = album1.getPhotos();
             ArrayList<Photo> album2Photos = album2.getPhotos();
             ArrayList<Photo> albumPhotos = new ArrayList<>();
